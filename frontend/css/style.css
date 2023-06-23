@@ -106,7 +106,7 @@ input, select{
 }
 
 .card:nth-child(2n) h1 {
-  background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background-image: linear-gradient(120deg, #84fab0 0%, #94d4f4 100%);
 }
 
 .card:nth-child(4n) h1 {
