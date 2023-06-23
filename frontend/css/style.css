@@ -88,6 +88,10 @@ input, select{
   width: 60%;
   height: 25px;
 }
+.star-selected {
+  color: gold; /* Cambiar el color a dorado u otro de tu elección */
+}
+
 
 @media screen and (min-width: 600px) {
   .card {

@@ -1,38 +1,108 @@
 window.onload = () => {
-  const app = document.getElementById("root");
-  const container = document.createElement("div");
-  container.setAttribute("class", "container");
-  app.appendChild(container);
+  const qs = (selector) => document.querySelector(selector);
 
-  // Aqui debemos agregar nuestro fetch
+  let $title = qs("#title");
+  let $rating = qs("#rating");
+  let $awards = qs("#awards");
+  let $release_date = qs("#release_date");
+  let $length = qs("#length");
+  let $movieId = qs("#movieId");
+  let $editar = qs("#editar");
+  let $crear = qs("#crear");
+  let $eliminar = qs("#eliminar");
 
+  let id = prompt("Para editar una película, ingrese el ID. De lo contrario, cancele y cree una nueva película.");
 
+  if (id) {
+      fetch(`http://localhost:3031/api/movies/${id}`)
+          .then((response) => response.json())
+          .then((data) => {
+              let movie = data.data;
+              $movieId.value = movie.id;
+              $title.value = movie.title;
+              $rating.value = movie.rating;
+              $awards.value = movie.awards;
+              $release_date.value = movie.release_date.slice(0, 10);
+              $length.value = movie.length;
+          })
+          .catch((error) => {
+              console.log(error);
+              alert("Error al obtener los datos de la película");
+          });
+  }
 
-  /** Codigo que debemos usar para mostrar los datos en el frontend
-    let data = peliculas.data;
+  $editar.addEventListener("click", () => {
+      let updatedData = {
+          title: $title.value,
+          rating: $rating.value,
+          awards: $awards.value,
+          release_date: $release_date.value,
+          length: $length.value,
+      };
 
-    data.forEach((movie) => {
-      const card = document.createElement("div");
-      card.setAttribute("class", "card");
+      let settings = {
+          method: "PUT",
+          body: JSON.stringify(updatedData),
+          headers: { "Content-Type": "application/json" }
+      };
 
-      const h1 = document.createElement("h1");
-      h1.textContent = movie.title;
+      let url = `http://localhost:3031/api/movies/update/${$movieId.value}`;
 
-      const p = document.createElement("p");
-      p.textContent = `Rating: ${movie.rating}`;
+      fetch(url, settings)
+          .then((response) => response.json())
+          .then(() => {
+              alert("Película modificada");
+          })
+          .catch((error) => {
+              console.log(error);
+              alert("Error al modificar la película");
+          });
+  });
 
-      const duracion = document.createElement("p");
-      duracion.textContent = `Duración: ${movie.length}`;
+  $crear.addEventListener("click", () => {
+      let updatedData = {
+          title: $title.value,
+          rating: $rating.value,
+          awards: $awards.value,
+          release_date: $release_date.value,
+          length: $length.value,
+      };
 
-      container.appendChild(card);
-      card.appendChild(h1);
-      card.appendChild(p);
-      if (movie.genre !== null) {
-        const genero = document.createElement("p");
-        genero.textContent = `Genero: ${movie.genre.name}`;
-        card.appendChild(genero);
+      let settings = {
+          method: "POST",
+          body: JSON.stringify(updatedData),
+          headers: { "Content-Type": "application/json" }
+      };
+
+      let url = `http://localhost:3031/api/movies/create`;
+
+      fetch(url, settings)
+          .then((response) => response.json())
+          .then(() => {
+              alert("Película creada");
+              if (response.ok) {
+                  window.location.href = "/home.html";
+              }
+          })
+          .catch((error) => {
+              console.log(error);
+          });
+  });
+
+  $eliminar.addEventListener("click", () => {
+
+      let url = `http://localhost:3031/api/movies/delete/${id}`
+
+      let settings = {
+          method: "DELETE",
+          headers: {"Content-Type" : "application/json"}
       }
-      card.appendChild(duracion);
-    });
-  */
-};
+
+      fetch(url, settings)
+          .then((response => console.log(response)))
+          .then(() => alert("Película borrada"))
+          if (response.ok) {
+              window.location.href = "/home.html";
+        }
+  })
+}
